@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta: Conciencia y Acción por el Agua</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        
+        /* Animación de olas */
+        .wave-bg {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: repeating-linear-gradient(transparent 0px, transparent 98px, rgba(255,255,255,0.1) 98px, rgba(255,255,255,0.1) 100px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(0px);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        .icon-wave {
+            font-size: 3em;
+            display: inline-block;
+            animation: wave 2s ease-in-out infinite;
+        }
+        
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(15deg); }
+            75% { transform: rotate(-15deg); }
+        }
+        
+        h1 {
+            color: #1a5f7a;
+            margin: 15px 0 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            color: #4a7c8c;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+        
+        .stats-badge {
+            background: linear-gradient(135deg, #e3f2fd, #bbdef5);
+            padding: 12px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 0.85em;
+            color: #0d4b6e;
+        }
+        
+        .progress-container {
+            background: #e0f0f5;
+            border-radius: 30px;
+            height: 12px;
+            margin: 25px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #2c7da0, #61a5c2);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 30px;
+        }
+        
+        .question-card {
+            background: #ffffff;
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 18px;
+            border: 1px solid #d4eaf0;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        
+        .question-card:hover {
+            border-color: #61a5c2;
+            box-shadow: 0 5px 15px rgba(44,125,160,0.1);
+        }
+        
+        .q-number {
+            display: inline-block;
+            background: #e8f4f8;
+            color: #1a5f7a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        .q-text {
+            font-weight: 600;
+            color: #1f3e48;
+            margin-bottom: 18px;
+            font-size: 1.05em;
+            line-height: 1.4;
+        }
+        
+        select, input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1.5px solid #cbdbe2;
+            border-radius: 14px;
+            font-size: 15px;
+            transition: all 0.2s;
+            background: #fefefe;
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #2c7da0;
+            box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
+        }
+        
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            background: #fafeff;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .option-item:hover {
+            background: #eef7fc;
+        }
+        
+        .option-item input {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+        }
+        
+        .option-item label {
+            flex: 1;
+            cursor: pointer;
+            font-weight: normal;
+            color: #2c3e44;
+        }
+        
+        .inline-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        
+        .badge-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f1f9fe;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .badge-check:hover {
+            background: #e0f0f8;
+        }
+        
+        .badge-check input {
+            margin: 0;
+            width: 16px;
+            height: 16px;
+        }
+        
+        button {
+            background: linear-gradient(95deg, #1f6e8c, #2c7da0);
+            color: white;
+            border: none;
+            padding: 16px 28px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 60px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(31,110,140,0.3);
+        }
+        
+        .result-panel {
+            margin-top: 35px;
+            padding: 25px;
+            background: #eef3f7;
+            border-radius: 24px;
+            display: none;
+            border-left: 6px solid #2c7da0;
+        }
+        
+        .result-panel.show {
+            display: block;
+            animation: fadeSlide 0.5s ease;
+        }
+        
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-title {
+            font-size: 1.4em;
+            color: #155e74;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        
+        .result-entry {
+            background: white;
+            padding: 12px 18px;
+            margin-bottom: 10px;
+            border-radius: 16px;
+            border-left: 4px solid #61a5c2;
+        }
+        
+        .error-msg {
+            color: #c44536;
+            font-size: 0.75em;
+            margin-top: 8px;
+            display: none;
+            padding-left: 10px;
+        }
+        
+        .error-msg.show {
+            display: block;
+        }
+        
+        .tip-water {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e0f0f5;
+            border-radius: 20px;
+            font-size: 0.85em;
+            text-align: center;
+            color: #155e74;
+        }
+        
+        @media (max-width: 680px) {
+            .container {
+                padding: 20px;
+            }
+            .badge-check {
+                padding: 5px 12px;
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="wave-bg"></div>
+<div class="container">
+    <div class="header">
+        <div class="icon-wave">💙🌊</div>
+        <h1>Conciencia y Acción por el Agua</h1>
+        <div class="subtitle">Pequeñas acciones generan grandes cambios.<br>Ayúdanos a entender cómo cuidamos el recurso más vital.</div>
+        <div class="stats-badge">💧 20 preguntas · 5 min · impacto real</div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <form id="aguaForm">
+        <!-- ==================== BLOQUE 1: PERFIL Y PERCEPCIÓN ==================== -->
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 1</span>
+            <div class="q-text">📍 ¿Cuál es tu principal fuente de abastecimiento de agua en el hogar?</div>
+            <select id="fuenteAgua">
+                <option value="">Selecciona una opción</option>
+                <option value="Red municipal">Red municipal (agua potable de la ciudad)</option>
+                <option value="Pozo propio">Pozo propio</option>
+                <option value="Camión cisterna / pipas">Camión cisterna / pipas</option>
+                <option value="Garrafones / embotellada">Garrafones / agua embotellada</option>
+                <option value="Captación de lluvia">Captación de lluvia</option>
+            </select>
+            <div class="error-msg" id="errorFuente">Selecciona tu fuente principal de agua</div>
+        </div>
+
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 2</span>
+            <div class="q-text">🧠 ¿Qué tan urgente consideras la crisis del agua en tu región?</div>
+            <div class="options-grid">
+                <label class="option-item"><input type="radio" name="urgencia" value="Muy urgente"> Muy urgente, ya estamos afectados</label>
+                <label class="option-item"><input type="radio" name="urgencia" value="Urgente"> Urgente, se empieza a notar escasez</label>
+                <label class="option-item"><input type="radio" name="urgencia" value="Moderada"> Moderada, pero hay que prevenir</label>
+                <label class="option-item"><input type="radio" name="urgencia" value="Poca urgencia"> Poca urgencia, aún hay agua suficiente</label>
+            </div>
+            <div class="error-msg" id="errorUrgencia">Elige una opción</div>
+        </div>
+
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 3</span>
+            <div class="q-text">📢 ¿Has participado en acciones colectivas para proteger fuentes de agua (ríos, mantos acuíferos)?</div>
+            <div class="options-grid">
+                <label class="option-item"><input type="radio" name="accionColectiva" value="Sí, varias veces"> Sí, varias veces</label>
+                <label class="option-item"><input type="radio" name="accionColectiva" value="Una vez"> Una vez</label>
+                <label class="option-item"><input type="radio" name="accionColectiva" value="Me interesa pero no he participado"> Me interesa pero no he participado</label>
+                <label class="option-item"><input type="radio" name="accionColectiva" value="No me interesa"> No me interesa</label>
+            </div>
+            <div class="error-msg" id="errorAccion">Selecciona una opción</div>
+        </div>
+
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 4</span>
+            <div class="q-text">🏡 En tu comunidad, ¿existen programas de captación de agua de lluvia o reutilización?</div>
+            <div class="options-grid">
+                <label class="option-item"><input type="radio" name="programasComunidad" value="Sí, ampliamente"> Sí, ampliamente implementados</label>
+                <label class="option-item"><input type="radio" name="programasComunidad" value="Pocos, pero hay iniciativas"> Pocos, pero hay iniciativas</label>
+                <label class="option-item"><input type="radio" name="programasComunidad" value="No existen"> No existen</label>
+                <label class="option-item"><input type="radio" name="programasComunidad" value="Desconozco"> Desconozco</label>
+            </div>
+            <div class="error-msg" id="errorProgramas">Elige una respuesta</div>
+        </div>
+
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 5</span>
+            <div class="q-text">💸 ¿Estarías dispuesto(a) a pagar un poco más en tu recibo de agua si se invierte en infraestructura sustentable?</div>
+            <div class="options-grid">
+                <label class="option-item"><input type="radio" name="disposicionPago" value="Sí, totalmente"> Sí, totalmente</label>
+                <label class="option-item"><input type="radio" name="disposicionPago" value="Solo si es transparente"> Solo si es transparente</label>
+                <label class="option-item"><input type="radio" name="disposicionPago" value="No, no podría pagar más"> No, no podría pagar más</label>
+                <label class="option-item"><input type="radio" name="disposicionPago" value="No estoy seguro"> No estoy seguro</label>
+            </div>
+            <div class="error-msg" id="errorDisposicion">Selecciona una opción</div>
+        </div>
+
+        <!-- ==================== BLOQUE 2: HÁBITOS CLAVE ==================== -->
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 6</span>
+            <div class="q-text">🚿 Al bañarte, ¿tomas alguna acción para reducir el consumo?</div>
+            <div class="options-grid">
+                <label class="option-item"><input type="radio" name="ahorroDucha" value="Ducha corta < 5 min"> Ducha corta (menos de 5 min)</label>
+                <label class="option-item"><input type="radio" name="ahorroDucha" value="Cierro llave al enjabonarme"> Cierro llave al enjabonarme</label>
+                <label class="option-item"><input type="radio" name="ahorroDucha" value="Ducha normal sin cerrar"> Ducha normal sin cerrar</label>
+                <label class="option-item"><input type="radio" name="ahorroDucha" value="No me fijo"> No me fijo</label>
+            </div>
+            <div class="error-msg" id="errorDuchaAhorro">Selecciona tu hábito</div>
+        </div>
+
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 7</span>
+            <div class="q-text">🍽️ En la cocina, ¿qué prácticas de ahorro realizas?</div>
+            <div class="options-grid">
+                <label class="option-item"><input type="radio" name="cocinaAhorro" value="Lavo trastes con llave cerrada / tina"> Lavo trastes con llave cerrada / uso tina</label>
+                <label class="option-item"><input type="radio" name="cocinaAhorro" value="Reutilizo agua de lavado de frutas/verduras"> Reutilizo agua de lavado de frutas/verduras</label>
+                <label class="option-item"><input type="radio" name="cocinaAhorro" value="Solo abro la llave para enjuagar"> Solo abro la llave para enjuagar</label>
+                <label class="option-item"><input type="radio" name="cocinaAhorro" value="No realizo acciones específicas"> No realizo acciones específicas</label>
+            </div>
+            <div class="error-msg" id="errorCocina">Selecciona una práctica</div>
+        </div>
+
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 8</span>
+            <div class="q-text">🌱 ¿Utilizas sistemas de riego eficiente en jardín o macetas?</div>
+            <div class="options-grid">
+                <label class="option-item"><input type="radio" name="riegoEficiente" value="Riego por goteo / automático"> Riego por goteo / automático</label>
+                <label class="option-item"><input type="radio" name="riegoEficiente" value="Riego en la noche o mañana"> Riego en la noche o mañana</label>
+                <label class="option-item"><input type="radio" name="riegoEficiente" value="Riego con manguera sin control"> Riego con manguera sin control</label>
+                <label class="option-item"><input type="radio" name="riegoEficiente" value="No tengo jardín/plantas"> No tengo jardín/plantas</label>
+            </div>
+            <div class="error-msg" id="errorRiegoEf">Selecciona una opción</div>
+        </div>
+
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 9</span>
+            <div class="q-text">🔄 ¿Qué tipo de agua reutilizas en tu hogar? (elige las que apliquen)</div>
+            <div class="inline-badges">
+                <label class="badge-check"><input type="checkbox" value="Agua de lavadora"> Agua de lavadora</label>
+                <label class="badge-check"><input type="checkbox" value="Agua de regadera"> Agua de regadera</label>
+                <label class="badge-check"><input type="checkbox" value="Agua de lavavajillas"> Agua de lavavajillas</label>
+                <label class="badge-check"><input type="checkbox" value="Agua de lluvia"> Agua de lluvia</label>
+                <label class="badge-check"><input type="checkbox" value="Ninguna"> Ninguna</label>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 10</span>
+            <div class="q-text">📱 ¿Utilizas apps o recordatorios para monitorear tu consumo de agua?</div>
+            <div class="options-grid">
+                <label class="option-item"><input type="radio" name="appsAgua" value="Sí, uso apps o medidor inteligente"> Sí, uso apps o medidor inteligente</label>
+                <label class="option-item"><input type="radio" name="appsAgua" value="Reviso el recibo y comparo"> Reviso el recibo y comparo</label>
+                <label class="option-item"><input type="radio" name="appsAgua" value="No monitoreo"> No monitoreo</label>
+            </div>
+            <div class="error-msg" id="errorApps">Selecciona una opción</div>
+        </div>
+
+        <!-- ==================== BLOQUE 3: EDUCACIÓN Y CULTURA ==================== -->
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 11</span>
+            <div class="q-text">📘 ¿Has recibido educación formal o talleres sobre cuidado del agua?</div>
+            <div class="options-grid">
+                <label class="option-item"><input type="radio" name="educacionAgua" value="Sí, en escuela o trabajo"> Sí, en escuela o trabajo</label>
+                <label class="option-item"><input type="radio" name="educacionAgua" value="Sí, por iniciativa propia"> Sí, por iniciativa propia</label>
+                <label class="option-item"><input type="radio" name="educacionAgua" value="No, pero me gustaría"> No, pero me gustaría</label>
+                <label class="option-item"><input type="radio" name="educacionAgua" value="No me interesa"> No me interesa</label>
+            </div>
+            <div class="error-msg" id="errorEducacion">Selecciona una opción</div>
+        </div>
+
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 12</span>
+            <div class="q-text">🏫 ¿Crees que las escuelas deberían incluir el cuidado del agua como materia obligatoria?</div>
+            <div class="options-grid">
+                <label class="option-item"><input type="radio" name="escuelasAgua" value="Sí, desde primaria"> Sí, desde primaria</label>
+                <label class="option-item"><input type="radio" name="escuelasAgua" value="Solo en secundaria/prepa"> Solo en secundaria/prepa</label>
+                <label class="option-item"><input type="radio" name="escuelasAgua" value="No, es opcional"> No, es opcional</label>
+            </div>
+            <div class="error-msg" id="errorEscuelas">Elige una opción</div>
+        </div>
+
+        <div class="question-card">
+            <span class="q-number">PREGUNTA 13</span>
+            <div class="q-text">🗣️ En tu entorno familiar, ¿quién promueve más el ahorro de agua?</div>
